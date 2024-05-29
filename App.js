@@ -1,10 +1,9 @@
 import 'react-native-gesture-handler';
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Provider as PaperProvider, } from 'react-native-paper';
-
-import { DefaultTheme, DarkTheme } from 'react-native-paper/src/index';
+import { Provider as PaperProvider} from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import SplashScreen from './src/screens/SplashScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
@@ -12,22 +11,26 @@ import HomeScreen from './src/screens/HomeScreen';
 import NoteScreen from './src/screens/NoteScreen';
 import NoteDetailScreen from './src/screens/NoteDetailScreen';
 import UserSettingsScreen from './src/screens/UserSettingsScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {MD3LightTheme as DefaultTheme, MD3DarkTheme as DarkTheme } from 'react-native-paper'
 
 const Stack = createStackNavigator();
 
-const lightTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-  },
+const lightThemeColors = {
+  primary: '#6200EE',
+  accent: '#03DAC6',
+  background: '#FFFFFF',
+  surface: '#FFFFFF',
+  text: '#000000',
+  placeholder: '#757575',
 };
 
-const darkTheme = {
-  ...DarkTheme,
-  colors: {
-    ...DarkTheme,
-  },
+const darkThemeColors = {
+  primary: '#BB86FC',
+  accent: '#03DAC6',
+  background: '#121212',
+  surface: '#121212',
+  text: '#FFFFFF',
+  placeholder: '#757575',
 };
 
 const App = () => {
@@ -46,6 +49,22 @@ const App = () => {
     };
     loadSettings();
   }, []);
+
+  const lightTheme = useMemo(
+    () => ({
+      ...DefaultTheme,
+      colors: { ...DefaultTheme.colors, ...lightThemeColors },
+    }),
+    []
+  );
+
+  const darkTheme = useMemo(
+    () => ({
+      ...DarkTheme,
+      colors: { ...DarkTheme.colors, ...darkThemeColors },
+    }),
+    []
+  );
 
   const theme = useMemo(() => (isDarkTheme ? darkTheme : lightTheme), [isDarkTheme]);
 
@@ -66,7 +85,7 @@ const App = () => {
 
   return (
     <PaperProvider theme={theme}>
-      <NavigationContainer>
+      <NavigationContainer theme={theme}>
         <Stack.Navigator initialRouteName="Splash">
           <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Login" component={LoginScreen} />

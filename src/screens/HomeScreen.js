@@ -3,7 +3,7 @@ import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { Text, Card, FAB, Button } from 'react-native-paper';
 import { sampleUsers } from '../dataSchema';
 
-const HomeScreen = ({ navigation, fontSize, fontStyle }) => {
+const HomeScreen = ({ navigation }) => {
   const [notes, setNotes] = useState(sampleUsers[0].notes); // Assume the first user is logged in for simplicity
 
   const renderItem = ({ item }) => (
@@ -11,24 +11,11 @@ const HomeScreen = ({ navigation, fontSize, fontStyle }) => {
       <Card style={styles.noteCard}>
         <Card.Title title={item.title} subtitle={item.date} />
         <Card.Content>
-          <Text style={[styles.text, { fontSize: getFontSize(fontSize), fontStyle: fontStyle === 'italic' ? 'italic' : 'normal', fontWeight: fontStyle === 'bold' ? 'bold' : 'normal' }]}>{item.content}</Text>
+          <Text>{item.content}</Text>
         </Card.Content>
       </Card>
     </TouchableOpacity>
   );
-
-  const getFontSize = (size) => {
-    switch (size) {
-      case 'small':
-        return 12;
-      case 'medium':
-        return 16;
-      case 'large':
-        return 20;
-      default:
-        return 16;
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -67,9 +54,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 16,
     bottom: 16,
-  },
-  text: {
-    marginBottom: 16,
   },
 });
 

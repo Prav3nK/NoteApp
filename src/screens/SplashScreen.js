@@ -1,25 +1,17 @@
+// src/screens/SplashScreen.js
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
-import { Text } from 'react-native-paper';
+import { View, Text, StyleSheet } from 'react-native';
 
 const SplashScreen = ({ navigation }) => {
-  const fadeAnim = new Animated.Value(0);
-
   useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 2000,
-      useNativeDriver: true,
-    }).start(() => {
-      navigation.replace('Login'); // Ensure 'Login' matches the screen name defined in App.js
-    });
-  }, [fadeAnim, navigation]);
+    setTimeout(() => {
+      navigation.replace('Login');
+    }, 2000); // 2 seconds
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
-      <Animated.View style={{ ...styles.logoContainer, opacity: fadeAnim }}>
-        <Text style={styles.logoText}>Notemake</Text>
-      </Animated.View>
+      <Text style={styles.text}>Notemake</Text>
     </View>
   );
 };
@@ -29,13 +21,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
   },
-  logoContainer: {
-    alignItems: 'center',
-  },
-  logoText: {
-    fontSize: 48,
+  text: {
+    fontSize: 32,
     fontWeight: 'bold',
   },
 });
