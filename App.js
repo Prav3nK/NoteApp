@@ -2,8 +2,7 @@ import 'react-native-gesture-handler';
 import React, { useState, useMemo, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Provider as PaperProvider} from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Provider as PaperProvider, MD3LightTheme as DefaultTheme, MD3DarkTheme as DarkTheme } from 'react-native-paper';
 import SplashScreen from './src/screens/SplashScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
@@ -11,30 +10,34 @@ import HomeScreen from './src/screens/HomeScreen';
 import NoteScreen from './src/screens/NoteScreen';
 import NoteDetailScreen from './src/screens/NoteDetailScreen';
 import UserSettingsScreen from './src/screens/UserSettingsScreen';
-import {MD3LightTheme as DefaultTheme, MD3DarkTheme as DarkTheme } from 'react-native-paper'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 
-const lightThemeColors = {
-  primary: '#6200EE',
-  accent: '#03DAC6',
-  background: '#FFFFFF',
-  surface: '#FFFFFF',
-  text: '#000000',
-  placeholder: '#757575',
+const lightTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#6200ea',
+    background: '#ffffff',
+    surface: '#ffffff',
+    text: '#000000',
+  },
 };
 
-const darkThemeColors = {
-  primary: '#BB86FC',
-  accent: '#03DAC6',
-  background: '#121212',
-  surface: '#121212',
-  text: '#FFFFFF',
-  placeholder: '#757575',
+const darkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    primary: '#bb86fc',
+    background: '#121212',
+    surface: '#121212',
+    text: '#ffffff',
+  },
 };
 
 const App = () => {
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [theme, setTheme] = useState(lightTheme);
   const [fontSize, setFontSize] = useState('medium');
   const [fontStyle, setFontStyle] = useState('normal');
 
@@ -43,60 +46,64 @@ const App = () => {
       const theme = await AsyncStorage.getItem('theme');
       const size = await AsyncStorage.getItem('fontSize');
       const style = await AsyncStorage.getItem('fontStyle');
-      setIsDarkTheme(theme === 'dark');
+      setTheme(theme === 'dark' ? darkTheme : lightTheme);
       setFontSize(size || 'medium');
       setFontStyle(style || 'normal');
     };
     loadSettings();
   }, []);
 
-  const lightTheme = useMemo(
-    () => ({
-      ...DefaultTheme,
-      colors: { ...DefaultTheme.colors, ...lightThemeColors },
-    }),
-    []
-  );
+  const updateSettings = (settings) => {
+    setTheme(settings.theme === 'dark' ? darkTheme : lightTheme);
+    setFontSize(settings.fontSize);
+    setFontStyle(settings.fontStyle);
+  };
 
-  const darkTheme = useMemo(
-    () => ({
-      ...DarkTheme,
-      colors: { ...DarkTheme.colors, ...darkThemeColors },
-    }),
-    []
-  );
+  const fontSizeStyles = useMemo(() => {
+    switch (fontSize) {
+      case 'small':
+        return { fontSize: 12 };
+      case 'large':
+        return { fontSize: 20 };
+      default:
+        return { fontSize: 16 };
+    }
+  }, [fontSize]);
 
-  const theme = useMemo(() => (isDarkTheme ? darkTheme : lightTheme), [isDarkTheme]);
+  const fontStyleStyles = useMemo(() => {
+    switch (fontStyle) {
+      case 'italic':
+        return { fontStyle: 'italic' };
+      case 'bold':
+        return { fontWeight: 'bold' };
+      default:
+        return { fontStyle: 'normal' };
+    }
+  }, [fontStyle]);
 
-  const updateSettings = async (newSettings) => {
-    if (newSettings.hasOwnProperty('theme')) {
-      setIsDarkTheme(newSettings.theme === 'dark');
-      await AsyncStorage.setItem('theme', newSettings.theme);
-    }
-    if (newSettings.hasOwnProperty('fontSize')) {
-      setFontSize(newSettings.fontSize);
-      await AsyncStorage.setItem('fontSize', newSettings.fontSize);
-    }
-    if (newSettings.hasOwnProperty('fontStyle')) {
-      setFontStyle(newSettings.fontStyle);
-      await AsyncStorage.setItem('fontStyle', newSettings.fontStyle);
-    }
+  const combinedStyles = {
+    ...fontSizeStyles,
+    ...fontStyleStyles,
   };
 
   return (
     <PaperProvider theme={theme}>
-      <NavigationContainer theme={theme}>
+      <NavigationContainer>
         <Stack.Navigator initialRouteName="Splash">
           <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Home">
-            {props => <HomeScreen {...props} fontSize={fontSize} fontStyle={fontStyle} />}
+            {(props) => <HomeScreen {...props} styles={combinedStyles} />}
           </Stack.Screen>
-          <Stack.Screen name="Note" component={NoteScreen} />
-          <Stack.Screen name="NoteDetail" component={NoteDetailScreen} />
+          <Stack.Screen name="Note">
+            {(props) => <NoteScreen {...props} styles={combinedStyles} />}
+          </Stack.Screen>
+          <Stack.Screen name="NoteDetail">
+            {(props) => <NoteDetailScreen {...props} styles={combinedStyles} />}
+          </Stack.Screen>
           <Stack.Screen name="UserSettings">
-            {props => <UserSettingsScreen {...props} updateSettings={updateSettings} />}
+            {(props) => <UserSettingsScreen {...props} updateSettings={updateSettings} />}
           </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>

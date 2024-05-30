@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Text, Card, FAB, Button } from 'react-native-paper';
+import { Text, Card, FAB, Button, IconButton } from 'react-native-paper';
 import { sampleUsers } from '../dataSchema';
 
 const HomeScreen = ({ navigation }) => {
@@ -19,21 +19,34 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Button icon="cog" mode="contained" onPress={() => navigation.navigate('UserSettings')}>
-        Settings
-      </Button>
       <FlatList
         data={notes}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
       />
-      <FAB
-        style={styles.fab}
-        small
-        icon="plus"
-        onPress={() => navigation.navigate('Note')}
-      />
+      <View style={styles.bottomBar}>
+        <IconButton
+          icon="home"
+          size={24}
+          onPress={() => navigation.navigate('Home')}
+        />
+        <IconButton
+          icon="note-plus"
+          size={24}
+          onPress={() => navigation.navigate('Note')}
+        />
+        <IconButton
+          icon="information"
+          size={24}
+          onPress={() => navigation.navigate('About')}
+        />
+        <IconButton
+          icon="cog"
+          size={24}
+          onPress={() => navigation.navigate('UserSettings')}
+        />
+      </View>
     </View>
   );
 };
@@ -50,10 +63,13 @@ const styles = StyleSheet.create({
   noteCard: {
     marginBottom: 16,
   },
-  fab: {
-    position: 'absolute',
-    right: 16,
-    bottom: 16,
+  bottomBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderColor: '#ccc',
   },
 });
 

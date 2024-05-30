@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
-import { TextInput, Button, Text } from 'react-native-paper';
+import { TextInput, Button, Text, Card } from 'react-native-paper';
+
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -16,7 +17,9 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    
+    <View  style={{overflow:'hidden',height: '50%', width:'100%'}}>
+       <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       <TextInput
         label="Username"
@@ -37,7 +40,12 @@ const LoginScreen = ({ navigation }) => {
       <Button onPress={() => navigation.navigate('SignUp')} style={styles.button}>
         Sign Up
       </Button>
-    </View>
+        </View>
+   </View>
+
+
+
+
   );
 };
 
@@ -47,15 +55,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    margin : 10,
     backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity:  0.2,
+    shadowRadius: 3,
+ 
+    
+
+    
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     marginBottom: 16,
+    fontWeight:"700",
   },
   input: {
-    width: '100%',
+    width: 300,
     marginBottom: 16,
+    borderRadius: 5,
+   
   },
   button: {
     marginTop: 16,

@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text, Switch, Button, RadioButton } from 'react-native-paper';
-import { Picker } from '@react-native-picker/picker';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Text, Alert } from 'react-native';
+import { Switch, Button, RadioButton, Card, TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const UserSettingsScreen = ({ updateSettings }) => {
+const UserSettingsScreen = ({ updateSettings, navigation }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
   const [fontSize, setFontSize] = useState('medium');
   const [fontStyle, setFontStyle] = useState('normal');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      const theme = await AsyncStorage.getItem('theme');
+      const size = await AsyncStorage.getItem('fontSize');
+      const style = await AsyncStorage.getItem('fontStyle');
+      setIsDarkTheme(theme === 'dark');
+      setFontSize(size || 'medium');
+      setFontStyle(style || 'normal');
+    };
+    loadSettings();
+  }, []);
 
   const saveSettingsToStorage = async () => {
     try {
@@ -28,44 +42,124 @@ const UserSettingsScreen = ({ updateSettings }) => {
     });
   };
 
+  const handleLogout = () => {
+    // Perform logout operations, e.g., clearing user data, navigating to login screen
+    navigation.replace('Login');
+  };
+
+  const handleChangePassword = () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      Alert.alert('Validation Error', 'Please fill all fields');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      Alert.alert('Validation Error', 'New passwords do not match');
+      return;
+    }
+    // Perform password change operations here
+    Alert.alert('Success', 'Password changed successfully');
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Dark Theme</Text>
-      <Switch value={isDarkTheme} onValueChange={setIsDarkTheme} />
-
-      <Text style={styles.sectionTitle}>Font Size</Text>
-      <Picker
-        selectedValue={fontSize}
-        style={styles.picker}
-        onValueChange={(itemValue) => setFontSize(itemValue)}
-      >
-        <Picker.Item label="Small" value="small" />
-        <Picker.Item label="Medium" value="medium" />
-        <Picker.Item label="Large" value="large" />
-      </Picker>
-
-      <Text style={styles.sectionTitle}>Font Style</Text>
-      <RadioButton.Group
-        onValueChange={newValue => setFontStyle(newValue)}
-        value={fontStyle}
-      >
-        <View style={styles.radioButton}>
-          <RadioButton value="normal" />
-          <Text style={styles.radioButtonText}>Normal</Text>
-        </View>
-        <View style={styles.radioButton}>
-          <RadioButton value="italic" />
-          <Text style={styles.radioButtonText}>Italic</Text>
-        </View>
-        <View style={styles.radioButton}>
-          <RadioButton value="bold" />
-          <Text style={styles.radioButtonText}>Bold</Text>
-        </View>
-      </RadioButton.Group>
-
-      <Button mode="contained" onPress={handleSaveSettings} style={styles.saveButton}>
-        Save Settings
-      </Button>
+      <Card style={styles.card}>
+        <Card.Title icon="cog" title="User Settings" />
+        <Card.Content>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Account Settings</Text>
+            <View style={styles.setting}>
+              <Text style={styles.text}>Change Password</Text>
+            </View>
+            <TextInput
+              label="Current Password"
+              value={currentPassword}
+              onChangeText={setCurrentPassword}
+              secureTextEntry
+              style={styles.input}
+            />
+            <TextInput
+              label="New Password"
+              value={newPassword}
+              onChangeText={setNewPassword}
+              secureTextEntry
+              style={styles.input}
+            />
+            <TextInput
+              label="Confirm New Password"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry
+              style={styles.input}
+            />
+            <Button mode="contained" onPress={handleChangePassword} style={styles.button}>
+              Change Password
+            </Button>
+            <Button mode="contained" onPress={handleLogout} style={styles.button}>
+              Logout
+            </Button>
+          </View>
+          <View style={styles.underline} />
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Theme Settings</Text>
+            <View style={styles.setting}>
+              <Text style={styles.text}>Dark Theme</Text>
+              <Switch
+                value={isDarkTheme}
+                onValueChange={setIsDarkTheme}
+                style={styles.switch}
+              />
+            </View>
+            <View style={styles.setting}>
+              <Text style={styles.text}>Font Size</Text>
+              <View style={{ flexDirection: 'row' }}>
+                <RadioButton.Group
+                  onValueChange={newValue => setFontSize(newValue)}
+                  value={fontSize}
+                >
+                  <View style={styles.radioButton}>
+                    <RadioButton value="small" />
+                    <Text>Small</Text>
+                  </View>
+                  <View style={styles.radioButton}>
+                    <RadioButton value="medium" />
+                    <Text>Medium</Text>
+                  </View>
+                  <View style={styles.radioButton}>
+                    <RadioButton value="large" />
+                    <Text>Large</Text>
+                  </View>
+                </RadioButton.Group>
+              </View>
+            </View>
+            <View style={styles.setting}>
+              <Text style={styles.text}>Font Style</Text>
+              <View style={{ flexDirection: 'row' }}>
+                <RadioButton.Group
+                  onValueChange={newValue => setFontStyle(newValue)}
+                  value={fontStyle}
+                >
+                  <View style={styles.radioButton}>
+                    <RadioButton value="normal" />
+                    <Text>Normal</Text>
+                  </View>
+                  <View style={styles.radioButton}>
+                    <RadioButton value="italic" />
+                    <Text>Italic</Text>
+                  </View>
+                  <View style={styles.radioButton}>
+                    <RadioButton value="bold" />
+                    <Text>Bold</Text>
+                  </View>
+                </RadioButton.Group>
+              </View>
+            </View>
+          </View>
+          <View style={styles.underline} />
+          <Button mode="contained" onPress={handleSaveSettings} style={styles.button}>
+            Save Settings
+          </Button>
+        </Card.Content>
+      </Card>
     </View>
   );
 };
@@ -74,30 +168,46 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 16,
+  card: {
+    padding: 16,
   },
-  picker: {
-    height: 50,
-    width: 150,
+  section: {
     marginBottom: 16,
   },
-  radioButton: {
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  setting: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
   },
-  radioButtonText: {
-    marginLeft: 8,
-    fontSize: 16,
-    fontFamily: 'Roboto-Regular',
+  text: {
+    fontSize: 18,
+    marginLeft: 16,
   },
-  saveButton: {
+  radioButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    marginRight: 16,
+  },
+  switch: {
+    alignSelf: 'center',
+  },
+  input: {
+    marginBottom: 16,
+  },
+  button: {
     marginTop: 16,
+  },
+  underline: {
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    marginBottom: 16,
   },
 });
 
