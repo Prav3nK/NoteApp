@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { Text, Card, IconButton, useTheme } from 'react-native-paper';
-import { sampleUsers } from '../dataSchema';
+import axios from 'axios';
 
-const HomeScreen = ({ navigation, styles: customStyles }) => {
-  const [notes, setNotes] = useState(sampleUsers[0].notes);
+const HomeScreen = ({ navigation, route, styles: customStyles }) => {
+  const { userId } = route.params; // Get the userId from route parameters
+  const [notes, setNotes] = useState([]);
   const theme = useTheme();
+  const baseURL = 'http://172.20.10.3:3000'; // Replace with your actual IP address
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  const fetchNotes = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/notes/${userId}`);
+      setNotes(response.data);
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+    }
+  };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('NoteDetail', { note: item })}>
+    <TouchableOpacity onPress={() => navigation.navigate('NoteDetail', { note: item, userId })}>
       <Card style={[styles.noteCard, customStyles, { backgroundColor: theme.colors.surface }]}>
         <Card.Title title={item.title} subtitle={item.date} titleStyle={[customStyles, { color: theme.colors.text }]} subtitleStyle={[customStyles, { color: theme.colors.text }]} />
         <Card.Content>
@@ -23,14 +38,14 @@ const HomeScreen = ({ navigation, styles: customStyles }) => {
       <FlatList
         data={notes}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.list}
       />
       <View style={[styles.bottomBar, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-        <IconButton icon="home" size={24} color={theme.colors.primary} onPress={() => navigation.navigate('Home')} />
-        <IconButton icon="note-plus" size={24} color={theme.colors.primary} onPress={() => navigation.navigate('Note')} />
-        <IconButton icon="information" size={24} color={theme.colors.primary} onPress={() => navigation.navigate('A')} />
-        <IconButton icon="cog" size={24} color={theme.colors.primary} onPress={() => navigation.navigate('UserSettings')} />
+        <IconButton icon="home" size={24} color={theme.colors.primary} onPress={() => navigation.navigate('Home', { userId })} />
+        <IconButton icon="note-plus" size={24} color={theme.colors.primary} onPress={() => navigation.navigate('Note', { userId })} />
+        <IconButton icon="information" size={24} color={theme.colors.primary} onPress={() => navigation.navigate('About', { userId })} />
+        <IconButton icon="cog" size={24} color={theme.colors.primary} onPress={() => navigation.navigate('UserSettings', { userId })} />
       </View>
     </View>
   );

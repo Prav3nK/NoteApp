@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Text, Button, Card, useTheme } from 'react-native-paper';
 
 const NoteDetailScreen = ({ route, navigation, styles: customStyles }) => {
-  const { note } = route.params;
+  const { note, userId } = route.params;
   const theme = useTheme();
 
   return (
@@ -14,7 +14,7 @@ const NoteDetailScreen = ({ route, navigation, styles: customStyles }) => {
           <Text style={customStyles}>{note.content}</Text>
         </Card.Content>
       </Card>
-      <Button icon="pencil" mode="contained" onPress={() => navigation.navigate('Note', { note })} style={styles.button}>
+      <Button icon="pencil" mode="contained" onPress={() => navigation.navigate('Note', { note, userId })} style={styles.button}>
         Edit Note
       </Button>
     </View>

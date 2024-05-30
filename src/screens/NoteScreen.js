@@ -1,80 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, useTheme } from 'react-native-paper';
-import { sampleUsers } from '../dataSchema';
-import dayjs from 'dayjs';
+import axios from 'axios';
 
-const NoteScreen = ({ route, navigation, styles: customStyles }) => {
-  const { note } = route.params || {};
-  const [title, setTitle] = useState(note?.title || '');
-  const [content, setContent] = useState(note?.content || '');
-  const [date, setDate] = useState(note?.date || dayjs().format('YYYY-MM-DD'));
+const NoteScreen = ({ navigation, route, styles: customStyles }) => {
+  const { userId, note } = route.params; // Get the userId and note from route parameters
+  const [title, setTitle] = useState(note ? note.title : '');
+  const [content, setContent] = useState(note ? note.content : '');
   const theme = useTheme();
+  const baseURL = 'http://172.20.10.3:3000'; // Replace with your actual IP address
 
-  useEffect(() => {
-    if (note) {
-      setTitle(note.title);
-      setContent(note.content);
-      setDate(note.date);
+  const handleSaveNote = async () => {
+    if (title === '' || content === '') {
+      Alert.alert('Validation Error', 'Please fill all fields');
+      return;
     }
-  }, [note]);
 
-  const handleSaveNote = () => {
-    if (note) {
-      note.title = title;
-      note.content = content;
-      note.date = date;
-    } else {
-      const newNote = {
-        id: Date.now().toString(),
-        title,
-        content,
-        date,
-      };
-      sampleUsers[0].notes.push(newNote);
+    try {
+      if (note) {
+        // Editing an existing note
+        const response = await axios.put(`${baseURL}/notes/${note.id}`, { title, content });
+        if (response.status === 200) {
+          Alert.alert('Success', 'Note updated successfully');
+        }
+      } else {
+        // Adding a new note
+        const response = await axios.post(`${baseURL}/notes/${userId}`, { title, content });
+        if (response.status === 201) {
+          Alert.alert('Success', 'Note added successfully');
+        }
+      }
+      // Navigate back to HomeScreen and pass userId
+      navigation.replace('Home', { userId });
+    } catch (error) {
+      console.log('Error saving note:', error);
+      Alert.alert('Error', 'Could not save note');
     }
-    navigation.navigate('Home');
   };
 
   return (
-    <View style={[styles.container, customStyles, { backgroundColor: theme.colors.background }]}>
-      <TextInput
-        label="Title"
-        value={title}
-        onChangeText={setTitle}
-        style={[styles.input, customStyles]}
-      />
-      <TextInput
-        label="Content"
-        value={content}
-        onChangeText={setContent}
-        style={[styles.input, customStyles]}
-        multiline
-      />
-      <TextInput
-        label="Date"
-        value={date}
-        onChangeText={setDate}
-        style={[styles.input, customStyles]}
-        disabled
-      />
-      <Button mode="contained" onPress={handleSaveNote} style={styles.button}>
-        {note ? 'Update Note' : 'Add Note'}
-      </Button>
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          label="Title"
+          value={title}
+          onChangeText={setTitle}
+          style={styles.input}
+        />
+        <TextInput
+          label="Content"
+          value={content}
+          onChangeText={setContent}
+          multiline
+          style={styles.input}
+        />
+        <Button mode="contained" onPress={handleSaveNote} style={styles.button}>
+          {note ? 'Update Note' : 'Add Note'}
+        </Button>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
+  inputContainer: {
+    padding: 10,
+    backgroundColor: '#fff',
   },
   input: {
-    marginBottom: 16,
+    marginBottom: 10,
   },
   button: {
-    marginTop: 16,
+    marginTop: 10,
   },
 });
 

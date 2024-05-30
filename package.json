@@ -2,6 +2,7 @@
   "name": "noteapp",
   "version": "1.0.0",
   "main": "expo/AppEntry.js",
+  
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -14,6 +15,8 @@
     "@react-native-segmented-control/segmented-control": "^2.5.2",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
     "expo": "~51.0.8",
     "expo-app-loading": "^2.1.1",
     "expo-font": "^12.0.6",

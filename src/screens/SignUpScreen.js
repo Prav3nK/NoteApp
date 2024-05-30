@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text, useTheme } from 'react-native-paper';
+import axios from 'axios';
 
 const SignUpScreen = ({ navigation, styles: customStyles }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const theme = useTheme();
+  const baseURL = 'http://172.20.10.3:3000'; // Replace with your actual IP address
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (username === '' || password === '' || confirmPassword === '') {
       Alert.alert('Validation Error', 'Please fill all fields');
       return;
@@ -19,7 +21,22 @@ const SignUpScreen = ({ navigation, styles: customStyles }) => {
       return;
     }
 
-    navigation.replace('Login');
+    try {
+      const response = await axios.post(`${baseURL}/auth/register`, { username, password });
+      if (response.status === 201) {
+        navigation.replace('Login');
+      }
+    } catch (error) {
+      console.log('Network Error:', error);
+      if (error.response) {
+        console.log('Response Data:', error.response.data);
+      } else if (error.request) {
+        console.log('Request Data:', error.request);
+      } else {
+        console.log('Error Message:', error.message);
+      }
+      Alert.alert('Sign Up Error', error?.response?.data?.error || 'Something went wrong');
+    }
   };
 
   return (
