@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Text, Card, FAB, Button, IconButton } from 'react-native-paper';
+import { Text, Card, IconButton } from 'react-native-paper';
 import { sampleUsers } from '../dataSchema';
 
-const HomeScreen = ({ navigation }) => {
-  const [notes, setNotes] = useState(sampleUsers[0].notes); // Assume the first user is logged in for simplicity
+const HomeScreen = ({ navigation, styles: customStyles }) => {
+  const [notes, setNotes] = useState(sampleUsers[0].notes);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('NoteDetail', { note: item })}>
-      <Card style={styles.noteCard}>
+      <Card style={[styles.noteCard, customStyles]}>
         <Card.Title title={item.title} subtitle={item.date} />
         <Card.Content>
           <Text>{item.content}</Text>
@@ -18,7 +18,7 @@ const HomeScreen = ({ navigation }) => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, customStyles]}>
       <FlatList
         data={notes}
         renderItem={renderItem}
@@ -26,26 +26,10 @@ const HomeScreen = ({ navigation }) => {
         contentContainerStyle={styles.list}
       />
       <View style={styles.bottomBar}>
-        <IconButton
-          icon="home"
-          size={24}
-          onPress={() => navigation.navigate('Home')}
-        />
-        <IconButton
-          icon="note-plus"
-          size={24}
-          onPress={() => navigation.navigate('Note')}
-        />
-        <IconButton
-          icon="information"
-          size={24}
-          onPress={() => navigation.navigate('About')}
-        />
-        <IconButton
-          icon="cog"
-          size={24}
-          onPress={() => navigation.navigate('UserSettings')}
-        />
+        <IconButton icon="home" size={24} onPress={() => navigation.navigate('Home')} />
+        <IconButton icon="note-plus" size={24} onPress={() => navigation.navigate('Note')} />
+        <IconButton icon="information" size={24} onPress={() => navigation.navigate('A')} />
+        <IconButton icon="cog" size={24} onPress={() => navigation.navigate('UserSettings')} />
       </View>
     </View>
   );

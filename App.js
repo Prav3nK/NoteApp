@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import React, { useState, useMemo, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Provider as PaperProvider, MD3LightTheme as DefaultTheme, MD3DarkTheme as DarkTheme } from 'react-native-paper';
+import { Provider as PaperProvider, DefaultTheme, DarkTheme } from 'react-native-paper';
 import SplashScreen from './src/screens/SplashScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
@@ -10,6 +10,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import NoteScreen from './src/screens/NoteScreen';
 import NoteDetailScreen from './src/screens/NoteDetailScreen';
 import UserSettingsScreen from './src/screens/UserSettingsScreen';
+import AboutScreen from './src/screens/AboutScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
@@ -104,6 +105,9 @@ const App = () => {
           </Stack.Screen>
           <Stack.Screen name="UserSettings">
             {(props) => <UserSettingsScreen {...props} updateSettings={updateSettings} />}
+          </Stack.Screen>
+          <Stack.Screen name="A">
+            {(props) => <AboutScreen {...props} styles={combinedStyles} />}
           </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>

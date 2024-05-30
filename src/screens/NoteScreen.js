@@ -4,7 +4,7 @@ import { TextInput, Button } from 'react-native-paper';
 import { sampleUsers } from '../dataSchema';
 import dayjs from 'dayjs';
 
-const NoteScreen = ({ route, navigation }) => {
+const NoteScreen = ({ route, navigation, styles: customStyles }) => {
   const { note } = route.params || {};
   const [title, setTitle] = useState(note?.title || '');
   const [content, setContent] = useState(note?.content || '');
@@ -20,43 +20,41 @@ const NoteScreen = ({ route, navigation }) => {
 
   const handleSaveNote = () => {
     if (note) {
-      // Update the existing note
       note.title = title;
       note.content = content;
       note.date = date;
     } else {
-      // Add a new note
       const newNote = {
         id: Date.now().toString(),
         title,
         content,
         date,
       };
-      sampleUsers[0].notes.push(newNote); // For simplicity, assume the first user
+      sampleUsers[0].notes.push(newNote);
     }
     navigation.navigate('Home');
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, customStyles]}>
       <TextInput
         label="Title"
         value={title}
         onChangeText={setTitle}
-        style={styles.input}
+        style={[styles.input, customStyles]}
       />
       <TextInput
         label="Content"
         value={content}
         onChangeText={setContent}
-        style={styles.input}
+        style={[styles.input, customStyles]}
         multiline
       />
       <TextInput
         label="Date"
         value={date}
         onChangeText={setDate}
-        style={styles.input}
+        style={[styles.input, customStyles]}
         disabled
       />
       <Button mode="contained" onPress={handleSaveNote}>

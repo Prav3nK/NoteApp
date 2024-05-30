@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Alert } from 'react-native';
 import { Switch, Button, RadioButton, Card, TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const UserSettingsScreen = ({ updateSettings, navigation }) => {
+const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
   const [fontSize, setFontSize] = useState('medium');
   const [fontStyle, setFontStyle] = useState('normal');
@@ -43,7 +43,6 @@ const UserSettingsScreen = ({ updateSettings, navigation }) => {
   };
 
   const handleLogout = () => {
-    // Perform logout operations, e.g., clearing user data, navigating to login screen
     navigation.replace('Login');
   };
 
@@ -56,13 +55,12 @@ const UserSettingsScreen = ({ updateSettings, navigation }) => {
       Alert.alert('Validation Error', 'New passwords do not match');
       return;
     }
-    // Perform password change operations here
     Alert.alert('Success', 'Password changed successfully');
   };
 
   return (
-    <View style={styles.container}>
-      <Card style={styles.card}>
+    <View style={[styles.container, customStyles]}>
+      <Card style={[styles.card, customStyles]}>
         <Card.Title icon="cog" title="User Settings" />
         <Card.Content>
           <View style={styles.section}>
@@ -75,21 +73,21 @@ const UserSettingsScreen = ({ updateSettings, navigation }) => {
               value={currentPassword}
               onChangeText={setCurrentPassword}
               secureTextEntry
-              style={styles.input}
+              style={[styles.input, customStyles]}
             />
             <TextInput
-              label="New Password"
+              label ="New Password"
               value={newPassword}
               onChangeText={setNewPassword}
               secureTextEntry
-              style={styles.input}
+              style={[styles.input, customStyles]}
             />
             <TextInput
               label="Confirm New Password"
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry
-              style={styles.input}
+              style={[styles.input, customStyles]}
             />
             <Button mode="contained" onPress={handleChangePassword} style={styles.button}>
               Change Password

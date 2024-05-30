@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 
-const SignUpScreen = ({ navigation }) => {
+const SignUpScreen = ({ navigation, styles: customStyles }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -22,27 +22,27 @@ const SignUpScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+    <View style={[styles.container, customStyles]}>
+      <Text style={[styles.title, customStyles]}>Sign Up</Text>
       <TextInput
         label="Username"
         value={username}
         onChangeText={setUsername}
-        style={styles.input}
+        style={[styles.input, customStyles]}
       />
       <TextInput
         label="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={styles.input}
+        style={[styles.input, customStyles]}
       />
       <TextInput
         label="Confirm Password"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry
-        style={styles.input}
+        style={[styles.input, customStyles]}
       />
       <Button mode="contained" onPress={handleSignUp} style={styles.button}>
         Sign Up

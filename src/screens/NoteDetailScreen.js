@@ -2,12 +2,12 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, Button, Card } from 'react-native-paper';
 
-const NoteDetailScreen = ({ route, navigation }) => {
+const NoteDetailScreen = ({ route, navigation, styles: customStyles }) => {
   const { note } = route.params;
 
   return (
-    <View style={styles.container}>
-      <Card style={styles.noteCard}>
+    <View style={[styles.container, customStyles]}>
+      <Card style={[styles.noteCard, customStyles]}>
         <Card.Title title={note.title} subtitle={note.date} />
         <Card.Content>
           <Text>{note.content}</Text>
