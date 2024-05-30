@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
 const SplashScreen = ({ navigation }) => {
+  const theme = useTheme();
+
   useEffect(() => {
     setTimeout(() => {
       navigation.replace('Login');
@@ -9,8 +12,8 @@ const SplashScreen = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Notemake</Text>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <Text style={[styles.text, { color: theme.colors.primary }]}>Notemake</Text>
     </View>
   );
 };

@@ -1,19 +1,20 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Button, Card } from 'react-native-paper';
+import { Text, Button, Card, useTheme } from 'react-native-paper';
 
 const NoteDetailScreen = ({ route, navigation, styles: customStyles }) => {
   const { note } = route.params;
+  const theme = useTheme();
 
   return (
-    <View style={[styles.container, customStyles]}>
+    <View style={[styles.container, customStyles, { backgroundColor: theme.colors.background }]}>
       <Card style={[styles.noteCard, customStyles]}>
-        <Card.Title title={note.title} subtitle={note.date} />
+        <Card.Title title={note.title} subtitle={note.date} titleStyle={customStyles} subtitleStyle={customStyles} />
         <Card.Content>
-          <Text>{note.content}</Text>
+          <Text style={customStyles}>{note.content}</Text>
         </Card.Content>
       </Card>
-      <Button icon="pencil" mode="contained" onPress={() => navigation.navigate('Note', { note })}>
+      <Button icon="pencil" mode="contained" onPress={() => navigation.navigate('Note', { note })} style={styles.button}>
         Edit Note
       </Button>
     </View>
@@ -24,10 +25,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
   },
   noteCard: {
     marginBottom: 16,
+  },
+  button: {
+    marginTop: 16,
   },
 });
 

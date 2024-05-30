@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
-import { TextInput, Button, Text } from 'react-native-paper';
+import { TextInput, Button, Text, useTheme } from 'react-native-paper';
 
 const SignUpScreen = ({ navigation, styles: customStyles }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const theme = useTheme();
 
   const handleSignUp = () => {
     if (username === '' || password === '' || confirmPassword === '') {
@@ -22,8 +23,8 @@ const SignUpScreen = ({ navigation, styles: customStyles }) => {
   };
 
   return (
-    <View style={[styles.container, customStyles]}>
-      <Text style={[styles.title, customStyles]}>Sign Up</Text>
+    <View style={[styles.container, customStyles, { backgroundColor: theme.colors.background }]}>
+      <Text style={[styles.title, customStyles, { color: theme.colors.text }]}>Sign Up</Text>
       <TextInput
         label="Username"
         value={username}

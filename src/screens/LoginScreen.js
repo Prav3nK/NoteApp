@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
-import { TextInput, Button, Text, Card } from 'react-native-paper';
+import { TextInput, Button, Text, Card, useTheme } from 'react-native-paper';
 
 const LoginScreen = ({ navigation, styles: customStyles }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const theme = useTheme();
 
   const handleLogin = () => {
     if (username === '' || password === '') {
@@ -16,9 +17,9 @@ const LoginScreen = ({ navigation, styles: customStyles }) => {
   };
 
   return (
-    <View style={{ overflow: 'hidden', height: '50%', width: '100%' }}>
+    <View style={{ overflow: 'hidden', height: '50%', width: '100%', backgroundColor: theme.colors.background }}>
       <View style={[styles.container, customStyles]}>
-        <Text style={[styles.title, customStyles]}>Login</Text>
+        <Text style={[styles.title, customStyles, { color: theme.colors.text }]}>Login</Text>
         <TextInput
           label="Username"
           value={username}
@@ -50,7 +51,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     margin: 10,
-    backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.2,

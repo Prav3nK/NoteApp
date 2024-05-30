@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import { TextInput, Button, useTheme } from 'react-native-paper';
 import { sampleUsers } from '../dataSchema';
 import dayjs from 'dayjs';
 
@@ -9,6 +9,7 @@ const NoteScreen = ({ route, navigation, styles: customStyles }) => {
   const [title, setTitle] = useState(note?.title || '');
   const [content, setContent] = useState(note?.content || '');
   const [date, setDate] = useState(note?.date || dayjs().format('YYYY-MM-DD'));
+  const theme = useTheme();
 
   useEffect(() => {
     if (note) {
@@ -36,7 +37,7 @@ const NoteScreen = ({ route, navigation, styles: customStyles }) => {
   };
 
   return (
-    <View style={[styles.container, customStyles]}>
+    <View style={[styles.container, customStyles, { backgroundColor: theme.colors.background }]}>
       <TextInput
         label="Title"
         value={title}
@@ -57,7 +58,7 @@ const NoteScreen = ({ route, navigation, styles: customStyles }) => {
         style={[styles.input, customStyles]}
         disabled
       />
-      <Button mode="contained" onPress={handleSaveNote}>
+      <Button mode="contained" onPress={handleSaveNote} style={styles.button}>
         {note ? 'Update Note' : 'Add Note'}
       </Button>
     </View>
@@ -68,10 +69,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
   },
   input: {
     marginBottom: 16,
+  },
+  button: {
+    marginTop: 16,
   },
 });
 
