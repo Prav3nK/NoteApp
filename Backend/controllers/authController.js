@@ -1,12 +1,18 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const db = require('../config/knex');
+
+const generateToken = (user) => {
+  return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+};
 
 exports.register = async (req, res) => {
   const { username, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   try {
     const [id] = await db('users').insert({ username, password: hashedPassword });
-    res.status(201).json({ message: 'User created', userId: id });
+    const token = generateToken({ id });
+    res.status(201).json({ message: 'User created', userId: id, token });
   } catch (error) {
     res.status(400).json({ error: 'User already exists' });
   }
@@ -22,5 +28,6 @@ exports.login = async (req, res) => {
   if (!isMatch) {
     return res.status(400).json({ error: 'Invalid credentials' });
   }
-  res.status(200).json({ message: 'Login successful', userId: user.id });
+  const token = generateToken(user);
+  res.status(200).json({ message: 'Login successful', userId: user.id, token });
 };

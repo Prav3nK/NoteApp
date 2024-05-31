@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text, useTheme } from 'react-native-paper';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation, styles: customStyles }) => {
   const [username, setUsername] = useState('');
@@ -18,6 +19,7 @@ const LoginScreen = ({ navigation, styles: customStyles }) => {
     try {
       const response = await axios.post(`${baseURL}/auth/login`, { username, password });
       if (response.status === 200) {
+        await AsyncStorage.setItem('token', response.data.token);
         navigation.replace('Home', { userId: response.data.userId });
       }
     } catch (error) {

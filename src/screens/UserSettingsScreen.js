@@ -11,7 +11,6 @@ const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
   const theme = useTheme();
 
   useEffect(() => {
@@ -45,8 +44,12 @@ const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }
     });
   };
 
-  const handleLogout = () => {
-    navigation.replace('Login');
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('token');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
   };
 
   const handleChangePassword = () => {

@@ -112,7 +112,7 @@ const App = () => {
           <Stack.Screen name="UserSettings">
             {(props) => <UserSettingsScreen {...props} updateSettings={updateSettings} styles={combinedStyles} />}
           </Stack.Screen>
-          <Stack.Screen name="A">
+          <Stack.Screen name="About">
             {(props) => <AboutScreen {...props} styles={combinedStyles} />}
           </Stack.Screen>
         </Stack.Navigator>

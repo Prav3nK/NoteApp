@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, useTheme } from 'react-native-paper';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NoteScreen = ({ navigation, route, styles: customStyles }) => {
   const { userId, note } = route.params; // Get the userId and note from route parameters
@@ -17,15 +18,20 @@ const NoteScreen = ({ navigation, route, styles: customStyles }) => {
     }
 
     try {
+      const token = await AsyncStorage.getItem('token');
       if (note) {
         // Editing an existing note
-        const response = await axios.put(`${baseURL}/notes/${note.id}`, { title, content });
+        const response = await axios.put(`${baseURL}/notes/${note.id}`, { title, content }, {
+          headers: { Authorization: token },
+        });
         if (response.status === 200) {
           Alert.alert('Success', 'Note updated successfully');
         }
       } else {
         // Adding a new note
-        const response = await axios.post(`${baseURL}/notes/${userId}`, { title, content });
+        const response = await axios.post(`${baseURL}/notes/${userId}`, { title, content }, {
+          headers: { Authorization: token },
+        });
         if (response.status === 201) {
           Alert.alert('Success', 'Note added successfully');
         }

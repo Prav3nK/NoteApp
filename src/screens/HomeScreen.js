@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { Text, Card, IconButton, useTheme } from 'react-native-paper';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = ({ navigation, route, styles: customStyles }) => {
   const { userId } = route.params; // Get the userId from route parameters
@@ -10,17 +11,20 @@ const HomeScreen = ({ navigation, route, styles: customStyles }) => {
   const baseURL = 'http://172.20.10.3:3000'; // Replace with your actual IP address
 
   useEffect(() => {
-    fetchNotes();
-  }, []);
+    const fetchNotes = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const response = await axios.get(`${baseURL}/notes/${userId}`, {
+          headers: { Authorization: token },
+        });
+        setNotes(response.data);
+      } catch (error) {
+        console.error('Error fetching notes:', error);
+      }
+    };
 
-  const fetchNotes = async () => {
-    try {
-      const response = await axios.get(`${baseURL}/notes/${userId}`);
-      setNotes(response.data);
-    } catch (error) {
-      console.error('Error fetching notes:', error);
-    }
-  };
+    fetchNotes();
+  }, [userId]);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('NoteDetail', { note: item, userId })}>

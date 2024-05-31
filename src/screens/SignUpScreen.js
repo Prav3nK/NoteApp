@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text, useTheme } from 'react-native-paper';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignUpScreen = ({ navigation, styles: customStyles }) => {
   const [username, setUsername] = useState('');
@@ -24,7 +25,8 @@ const SignUpScreen = ({ navigation, styles: customStyles }) => {
     try {
       const response = await axios.post(`${baseURL}/auth/register`, { username, password });
       if (response.status === 201) {
-        navigation.replace('Login');
+        await AsyncStorage.setItem('token', response.data.token);
+        navigation.replace('Home', { userId: response.data.userId });
       }
     } catch (error) {
       console.log('Network Error:', error);
