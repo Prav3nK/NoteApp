@@ -110,7 +110,6 @@ const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }
           <Card.Content>
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, customStyles, { color: theme.colors.text }]}>Account Settings</Text>
-              <Text style={[styles.text, customStyles, { color: theme.colors.text }]}>User Name: {userName}</Text>
               <View style={styles.setting}>
                 <Text style={[styles.text, customStyles, { color: theme.colors.text }]}>Change Password</Text>
               </View>
