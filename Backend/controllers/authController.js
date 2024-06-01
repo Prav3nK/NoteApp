@@ -35,7 +35,7 @@ exports.changePassword = async (req, res) => {
   const { userId, currentPassword, newPassword } = req.body;
   
   try {
-    const user = await knex('users').where({ id: userId }).first();
+    const user = await db('users').where({ id: userId }).first();
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -46,7 +46,7 @@ exports.changePassword = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await knex('users').where({ id: userId }).update({ password: hashedPassword });
+    await db('users').where({ id: userId }).update({ password: hashedPassword });
 
     res.status(200).json({ message: 'Password changed successfully' });
   } catch (error) {

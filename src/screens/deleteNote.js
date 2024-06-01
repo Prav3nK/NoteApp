@@ -1,21 +1,21 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
-import { BASE_URL } from '@env'; // Correct way to import
+import { BASE_URL } from '@env';
 
-export const handleDeleteNote = async (noteId, notes, setNotes, navigation) => {
+export const handleDeleteNote = async (noteId, navigation) => {
   try {
     const token = await AsyncStorage.getItem('token');
-    await axios.delete(`${BASE_URL}/notes/${noteId}`, {
+    if (!token) {
+      throw new Error('Token not found');
+    }
+
+    const response = await axios.delete(`${BASE_URL}/notes/${noteId}`, {
       headers: { Authorization: token },
     });
 
-    const updatedNotes = notes.filter(note => note.id !== noteId);
-    setNotes(updatedNotes); // Update the notes state
-
-    Alert.alert('Success', 'Note deleted successfully', [
-      { text: 'OK', onPress: () => navigation.goBack() }
-    ]);
+    Alert.alert('Success', 'Note deleted successfully');
+    navigation.goBack(); // Navigate back after deletion
   } catch (error) {
     console.error('Error deleting note:', error);
     Alert.alert('Error', 'Could not delete note');

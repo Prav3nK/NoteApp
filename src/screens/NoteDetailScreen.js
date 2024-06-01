@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
-import { Text, Button, Card, useTheme, IconButton } from 'react-native-paper';
+import { Text, Button, Card, useTheme } from 'react-native-paper';
 import { handleDeleteNote } from './deleteNote'; // Import the deleteNote function
 
 const NoteDetailScreen = ({ route, navigation, styles: customStyles }) => {
-  const { note, notes, setNotes, userId, onDeleteNote } = route.params; // Get onDeleteNote callback from params
+  const { note, userId, onDeleteNote } = route.params; // Get userId and onDeleteNote callback from params
   const theme = useTheme();
 
   const confirmDelete = () => {
@@ -20,7 +20,7 @@ const NoteDetailScreen = ({ route, navigation, styles: customStyles }) => {
           text: "Delete",
           style: "destructive",
           onPress: () => {
-            handleDeleteNote(note.id, notes, setNotes, navigation);
+            handleDeleteNote(note.id, navigation);
             onDeleteNote(note.id); // Call the onDeleteNote callback to update the state in HomeScreen
           }
         }
@@ -38,7 +38,7 @@ const NoteDetailScreen = ({ route, navigation, styles: customStyles }) => {
         </Card.Content>
       </Card>
       <View style={styles.buttonContainer}>
-        <Button icon="pencil" mode="contained" onPress={() => navigation.navigate('Note', { note, notes, setNotes, userId })} style={styles.button}>
+        <Button icon="pencil" mode="contained" onPress={() => navigation.navigate('Note', { note, userId })} style={styles.button}>
           Edit Note
         </Button>
         <Button icon="delete" mode="contained" color={theme.colors.error} onPress={confirmDelete} style={styles.button}>

@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { BASE_URL } from '@env';
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -19,17 +19,23 @@ const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }
 
   useEffect(() => {
     const loadSettings = async () => {
-      const theme = await AsyncStorage.getItem('theme');
-      const size = await AsyncStorage.getItem('fontSize');
-      const style = await AsyncStorage.getItem('fontStyle');
-      setIsDarkTheme(theme === 'dark');
-      setFontSize(size || 'medium');
-      setFontStyle(style || 'normal');
-      
-      const token = await AsyncStorage.getItem('token');
-      if (token) {
-        const { username } = jwtDecode(token);
-        setUserName(username);
+      try {
+        const theme = await AsyncStorage.getItem('theme');
+        const size = await AsyncStorage.getItem('fontSize');
+        const style = await AsyncStorage.getItem('fontStyle');
+        setIsDarkTheme(theme === 'dark');
+        setFontSize(size || 'medium');
+        setFontStyle(style || 'normal');
+        
+        const token = await AsyncStorage.getItem('token');
+        if (token) {
+          const decoded = jwtDecode(token);
+          setUserName(decoded.username);
+        } else {
+          console.error('No token found');
+        }
+      } catch (error) {
+        console.error('Error loading settings or decoding token:', error);
       }
     };
     loadSettings();
@@ -74,13 +80,17 @@ const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }
 
     try {
       const token = await AsyncStorage.getItem('token');
-      const { id: userId } = jwtDecode(token);
+      if (!token) {
+        throw new Error('Token not found');
+      }
+      const decoded = jwtDecode(token);
+      const userId = decoded.id;
       await axios.post(`${BASE_URL}/auth/changePassword`, {
         userId,
         currentPassword,
         newPassword
       }, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: token },
       });
       Alert.alert('Success', 'Password changed successfully');
       setCurrentPassword('');
@@ -105,7 +115,7 @@ const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }
                 <Text style={[styles.text, customStyles, { color: theme.colors.text }]}>Change Password</Text>
               </View>
               <TextInput
-                label="Current Password"
+                label="Current Password" 
                 value={currentPassword}
                 onChangeText={setCurrentPassword}
                 secureTextEntry

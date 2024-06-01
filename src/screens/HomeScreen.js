@@ -34,7 +34,7 @@ const HomeScreen = ({ navigation, route, styles: customStyles }) => {
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('NoteDetail', { note: item, notes, setNotes, onDeleteNote: handleDeleteNoteCallback })}>
+    <TouchableOpacity onPress={() => navigation.navigate('NoteDetail', { note: item, userId, onDeleteNote: handleDeleteNoteCallback })}>
       <Card style={[styles.noteCard, customStyles, { backgroundColor: theme.colors.surface }]}>
         <Card.Title 
           title={item.title} 
@@ -86,4 +86,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen; 
+export default HomeScreen;
