@@ -1,9 +1,10 @@
+// authRoutes.js
 const express = require('express');
-const { verifyToken } = require('../middleware/authMiddleware');
-const { register, login } = require('../controllers/authController');
 const router = express.Router();
+const authController = require('../controllers/authController');
 
-router.post('/register', register);
-router.post('/login', login);
+router.post('/login', authController.login);
+router.post('/register', authController.register);
+router.post('/changePassword', authController.changePassword); // New route for password change
 
 module.exports = router;

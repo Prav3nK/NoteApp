@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, Alert, ScrollView } from 'react-native';
 import { Switch, Button, Card, TextInput, useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import { BASE_URL } from '@env';
+import jwtDecode from 'jwt-decode';
 
 const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -11,6 +14,7 @@ const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [userName, setUserName] = useState('');
   const theme = useTheme();
 
   useEffect(() => {
@@ -21,6 +25,12 @@ const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }
       setIsDarkTheme(theme === 'dark');
       setFontSize(size || 'medium');
       setFontStyle(style || 'normal');
+      
+      const token = await AsyncStorage.getItem('token');
+      if (token) {
+        const { username } = jwtDecode(token);
+        setUserName(username);
+      }
     };
     loadSettings();
   }, []);
@@ -52,7 +62,7 @@ const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }
     });
   };
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
       Alert.alert('Validation Error', 'Please fill all fields');
       return;
@@ -61,7 +71,25 @@ const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }
       Alert.alert('Validation Error', 'New passwords do not match');
       return;
     }
-    Alert.alert('Success', 'Password changed successfully');
+
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const { id: userId } = jwtDecode(token);
+      await axios.post(`${BASE_URL}/auth/changePassword`, {
+        userId,
+        currentPassword,
+        newPassword
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      Alert.alert('Success', 'Password changed successfully');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error) {
+      console.error('Error changing password:', error);
+      Alert.alert('Error', 'Failed to change password');
+    }
   };
 
   return (
@@ -72,6 +100,7 @@ const UserSettingsScreen = ({ updateSettings, navigation, styles: customStyles }
           <Card.Content>
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, customStyles, { color: theme.colors.text }]}>Account Settings</Text>
+              <Text style={[styles.text, customStyles, { color: theme.colors.text }]}>User Name: {userName}</Text>
               <View style={styles.setting}>
                 <Text style={[styles.text, customStyles, { color: theme.colors.text }]}>Change Password</Text>
               </View>

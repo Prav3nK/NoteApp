@@ -13,6 +13,7 @@ import UserSettingsScreen from './src/screens/UserSettingsScreen';
 import AboutScreen from './src/screens/AboutScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 const Stack = createStackNavigator();
 
 const CombinedDefaultTheme = {

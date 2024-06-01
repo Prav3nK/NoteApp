@@ -3,13 +3,14 @@ import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text, useTheme } from 'react-native-paper';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BASE_URL } from '@env';
 
 const SignUpScreen = ({ navigation, styles: customStyles }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const theme = useTheme();
-  const baseURL = 'http://172.20.10.3:3000'; // Replace with your actual IP address
+  const baseURL = BASE_URL; // Replace with your actual IP address
 
   const handleSignUp = async () => {
     if (username === '' || password === '' || confirmPassword === '') {

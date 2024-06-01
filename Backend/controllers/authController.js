@@ -31,3 +31,26 @@ exports.login = async (req, res) => {
   const token = generateToken(user);
   res.status(200).json({ message: 'Login successful', userId: user.id, token });
 };
+exports.changePassword = async (req, res) => {
+  const { userId, currentPassword, newPassword } = req.body;
+  
+  try {
+    const user = await knex('users').where({ id: userId }).first();
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Incorrect current password' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await knex('users').where({ id: userId }).update({ password: hashedPassword });
+
+    res.status(200).json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

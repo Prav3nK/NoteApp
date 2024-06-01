@@ -1,10 +1,33 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text, Button, Card, useTheme } from 'react-native-paper';
+import { View, StyleSheet, Alert } from 'react-native';
+import { Text, Button, Card, useTheme, IconButton } from 'react-native-paper';
+import { handleDeleteNote } from './deleteNote'; // Import the deleteNote function
 
 const NoteDetailScreen = ({ route, navigation, styles: customStyles }) => {
-  const { note, userId } = route.params;
+  const { note, notes, setNotes, userId, onDeleteNote } = route.params; // Get onDeleteNote callback from params
   const theme = useTheme();
+
+  const confirmDelete = () => {
+    Alert.alert(
+      "Delete Note",
+      "Are you sure you want to delete this note?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            handleDeleteNote(note.id, notes, setNotes, navigation);
+            onDeleteNote(note.id); // Call the onDeleteNote callback to update the state in HomeScreen
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
 
   return (
     <View style={[styles.container, customStyles, { backgroundColor: theme.colors.background }]}>
@@ -14,9 +37,14 @@ const NoteDetailScreen = ({ route, navigation, styles: customStyles }) => {
           <Text style={customStyles}>{note.content}</Text>
         </Card.Content>
       </Card>
-      <Button icon="pencil" mode="contained" onPress={() => navigation.navigate('Note', { note, userId })} style={styles.button}>
-        Edit Note
-      </Button>
+      <View style={styles.buttonContainer}>
+        <Button icon="pencil" mode="contained" onPress={() => navigation.navigate('Note', { note, notes, setNotes, userId })} style={styles.button}>
+          Edit Note
+        </Button>
+        <Button icon="delete" mode="contained" color={theme.colors.error} onPress={confirmDelete} style={styles.button}>
+          Delete Note
+        </Button>
+      </View>
     </View>
   );
 };
@@ -29,8 +57,18 @@ const styles = StyleSheet.create({
   noteCard: {
     marginBottom: 16,
   },
-  button: {
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 16,
+  },
+  button: {
+    flex: 1,
+    marginHorizontal: 4,
+  },
+  deleteButton: {
+    marginTop: 16,
+    alignSelf: 'center',
   },
 });
 

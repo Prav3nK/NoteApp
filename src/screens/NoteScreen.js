@@ -3,13 +3,15 @@ import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, useTheme } from 'react-native-paper';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BASE_URL } from '@env';
+
 
 const NoteScreen = ({ navigation, route, styles: customStyles }) => {
   const { userId, note } = route.params; // Get the userId and note from route parameters
   const [title, setTitle] = useState(note ? note.title : '');
   const [content, setContent] = useState(note ? note.content : '');
   const theme = useTheme();
-  const baseURL = 'http://172.20.10.3:3000'; // Replace with your actual IP address
+  const baseURL = BASE_URL; // Replace with your actual IP address
 
   const handleSaveNote = async () => {
     if (title === '' || content === '') {

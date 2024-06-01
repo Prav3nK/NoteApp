@@ -21,6 +21,10 @@ exports.updateNote = async (req, res) => {
 
 exports.deleteNote = async (req, res) => {
   const { id } = req.params;
-  await db('notes').where({ id }).del();
-  res.status(204).send();
+  try {
+    await db('notes').where({ id }).del();
+    res.status(200).json({ message: 'Note deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete note' });
+  }
 };
