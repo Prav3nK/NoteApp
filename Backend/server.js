@@ -4,13 +4,19 @@ const cors = require('cors');
 const knex = require('./config/knex');
 const authRoutes = require('./routes/authRoutes');
 const noteRoutes = require('./routes/noteRoutes');
+const swaggerDocs = require('./swagger');
+
 const app = express();
 
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors());
+
 app.use('/auth', authRoutes);
 app.use('/notes', noteRoutes);
+
+// Integrate Swagger
+swaggerDocs(app);
 
 const PORT = process.env.PORT || 5000;
 
