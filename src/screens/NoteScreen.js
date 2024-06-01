@@ -79,6 +79,6 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 16,
   },
-});
+}); ///This is to chck
 
 export default NoteScreen;
