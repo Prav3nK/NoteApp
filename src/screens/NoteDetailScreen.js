@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { Text, Button, Card, useTheme } from 'react-native-paper';
-import { handleDeleteNote } from './deleteNote'; // Import the deleteNote function
+import { handleDeleteNote } from './deleteNote'; 
 
 const NoteDetailScreen = ({ route, navigation, styles: customStyles }) => {
-  const { note, userId, onDeleteNote } = route.params; // Get userId and onDeleteNote callback from params
+  const { note, userId, onDeleteNote } = route.params; 
   const theme = useTheme();
 
   const confirmDelete = () => {

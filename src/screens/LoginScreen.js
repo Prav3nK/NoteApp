@@ -9,7 +9,7 @@ const LoginScreen = ({ navigation, styles: customStyles }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const theme = useTheme();
-  const baseURL = BASE_URL; // Replace with your actual IP address
+  const baseURL = BASE_URL; 
 
   const handleLogin = async () => {
     if (username === '' || password === '') {

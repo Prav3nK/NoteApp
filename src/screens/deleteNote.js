@@ -15,7 +15,7 @@ export const handleDeleteNote = async (noteId, navigation) => {
     });
 
     Alert.alert('Success', 'Note deleted successfully');
-    navigation.goBack(); // Navigate back after deletion
+    navigation.goBack(); 
   } catch (error) {
     console.error('Error deleting note:', error);
     Alert.alert('Error', 'Could not delete note');
