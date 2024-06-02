@@ -10,7 +10,7 @@ const SignUpScreen = ({ navigation, styles: customStyles }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const theme = useTheme();
-  const baseURL = BASE_URL; // Replace with your actual IP address
+  const baseURL = BASE_URL; 
 
   const handleSignUp = async () => {
     if (username === '' || password === '' || confirmPassword === '') {
