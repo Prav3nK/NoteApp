@@ -25,7 +25,7 @@ The purpose of this application is to provide a simple and user-friendly interfa
 #### Backend
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-repo/note-app.git
+   git clone https://github.com/Prav3nK/NoteApp.git
    cd note-app/Backend
    
 2. Install dependencies
